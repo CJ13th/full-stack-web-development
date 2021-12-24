@@ -16,12 +16,12 @@ export const api = (request: Request, data?: Record<string, unknown>) => {
         case "POST":
             todos.push(data as Todo);
             body = data;
-            // status = 201;
+            status = 201;
         case "DELETE":
             todos = todos.filter((todo) => {
                 return todo.uid !== request.params.uid
             })
-            // status = 200;
+            status = 200;
             break;
         case "PATCH":
             todos = todos.map((todo) => {
@@ -34,13 +34,14 @@ export const api = (request: Request, data?: Record<string, unknown>) => {
                 }
                 return todo;
             })
-            // status = 200;
+            status = 200;
+            body = todos.find(todo => todo.uid === request.params.uid)
             break;
         default: 
             break;
     }
 
-    if (request.method.toUpperCase() !== 'GET') {
+    if (request.method.toUpperCase() !== 'GET' && request.headers.accept !== 'application/json') {
         return {
             status: 303, 
             headers: {
